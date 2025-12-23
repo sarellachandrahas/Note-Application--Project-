@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/* Function declarations */
+void createNote();
+void viewNote();
+void deleteNote();
+
+int main() {
+    int choice;
+
+    do {
+        printf("\n===== NOTES APPLICATION =====\n");
+        printf("1. Create Note\n");
+        printf("2. View Note\n");
+        printf("3. Delete Note\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar();   // clear newline left by scanf
+
+        switch (choice) {
+            case 1:
+                createNote();
+                break;
+            case 2:
+                viewNote();
+                break;
+            case 3:
+                deleteNote();
+                break;
+            case 4:
+                printf("Exiting program... Thank you!\n");
+                break;
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+
+/* Function to create a note */
+void createNote() {
+    FILE *fp;
+    char filename[50];
+    int ch;
+
+    printf("Enter note name (with .txt): ");
+    scanf("%s", filename);
+    getchar();   // clear buffer
+
+    fp = fopen(filename, "w");
+    if (fp == NULL) {
+        printf("Error creating file!\n");
+        return;
+    }
+
+    printf("Enter note content (Press # to save):\n");
+
+    while ((ch = getchar()) != '#') {
+        fputc(ch, fp);
+    }
+
+    fclose(fp);
+    printf("Note saved successfully.\n");
+}
+
+/* Function to view a note */
+void viewNote() {
+    FILE *fp;
+    char filename[50];
+    int ch;
+
+    printf("Enter note name to view: ");
+    scanf("%s", filename);
+    getchar();   // clear buffer
+
+    fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("Note not found!\n");
+        return;
+    }
+
+    printf("\n--- Note Content ---\n");
+    while ((ch = fgetc(fp)) != EOF) {
+        putchar(ch);
+    }
+    printf("\n--------------------\n");
+
+    fclose(fp);
+}
+
+/* Function to delete a note */
+void deleteNote() {
+    char filename[50];
+
+    printf("Enter note name to delete: ");
+    scanf("%s", filename);
+    getchar();   // clear buffer
+
+    if (remove(filename) == 0) {
+        printf("Note deleted successfully.\n");
+    } else {
+        printf("Error deleting note.\n");
+    }
+}
